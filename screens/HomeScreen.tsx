@@ -38,7 +38,7 @@ const DUMMY_DESTINATIONS: Destination[] = [
     country: 'Indonesia',
     rating: 5.0,
     price: '4.000/pax',
-    imageUrl: require('../assets/images/lb.jpg'),
+    imageUrl: require('../assets/lb.jpg'),
   },
   {
     id: '2',
@@ -46,7 +46,7 @@ const DUMMY_DESTINATIONS: Destination[] = [
     country: 'Italia',
     rating: 4.7,
     price: '3.500/pax',
-    imageUrl: require('../assets/images/venice.jpg'),
+    imageUrl: require('../assets/venice.jpg'),
   },
   {
     id: '3',
@@ -54,7 +54,7 @@ const DUMMY_DESTINATIONS: Destination[] = [
     country: 'Indonesia',
     rating: 4.9,
     price: '4.500/pax',
-    imageUrl: require('../assets/images/sumba.jpeg'),
+    imageUrl: require('../assets/sumba.jpeg'),
   },
 ];
 
