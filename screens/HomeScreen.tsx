@@ -1,77 +1,262 @@
 import React from 'react';
 import {
-  ImageBackground,
-  StyleSheet,
-  Text,
   View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TextInput,
   TouchableOpacity,
+  StatusBar,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Feather from 'react-native-vector-icons/Feather';
+import Entypo from 'react-native-vector-icons/Entypo';
+import DestinationCard from '../components/DestinationCard';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-const HomeScreen = ({ navigation }: any) => {
+// Add explicit types
+type Destination = {
+  id: string;
+  title: string;
+  country: string;
+  rating: number;
+  price: string;
+  imageUrl: any;
+};
+
+type RootStackParamList = {
+  Home: undefined;
+};
+
+type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+
+// Dummy data - using local images
+const DUMMY_DESTINATIONS: Destination[] = [
+  {
+    id: '1',
+    title: 'Labuan Bajo',
+    country: 'Indonesia',
+    rating: 5.0,
+    price: '4.000/pax',
+    imageUrl: require('../assets/images/lb.jpg'),
+  },
+  {
+    id: '2',
+    title: 'Venice',
+    country: 'Italia',
+    rating: 4.7,
+    price: '3.500/pax',
+    imageUrl: require('../assets/images/venice.jpg'),
+  },
+  {
+    id: '3',
+    title: 'Sumba Island',
+    country: 'Indonesia',
+    rating: 4.9,
+    price: '4.500/pax',
+    imageUrl: require('../assets/images/sumba.jpeg'),
+  },
+];
+
+const HomeScreen: React.FC<Props> = ({ navigation: _navigation }) => {
   return (
-    <ImageBackground
-      source={require('../assets/lb.jpeg')}
-      style={styles.background}
-      resizeMode="cover"
-    >
-      <View style={styles.overlay}>
-        <View style={styles.content}>
-          <Text style={styles.title}>Your Next Adventure Starts Here</Text>
-          <Text style={styles.subtitle}>
-            Life is too short to stay in one place. Find your next favorite
-            city, beach, or mountain and let's get moving!
-          </Text>
-
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('LabuanBajoDetail')}
-          >
-            <Text style={styles.buttonText}>Start Exploring</Text>
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar barStyle="dark-content" backgroundColor="white" />
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* === 1. Header === */}
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.greetingTitle}>Hi,</Text>
+            <Text style={styles.greetingName}>Haikal</Text>
+          </View>
+          <TouchableOpacity style={styles.heartButton}>
+            <Feather name="heart" size={24} color="#FF7043" />
+            <View style={styles.notificationDot} />
           </TouchableOpacity>
         </View>
-      </View>
-    </ImageBackground>
+
+        {/* === 2. Plan Your Summer Card (Orange) === */}
+        <View style={styles.planCard}>
+          <Text style={styles.planTitle}>Plan Your Summer!</Text>
+          <TouchableOpacity
+            style={styles.planArrowButton}
+            onPress={() => {
+              /* example navigation usage */
+              // navigation.navigate('Home');
+            }}
+          >
+            <Entypo name="chevron-right" size={24} color="white" />
+          </TouchableOpacity>
+        </View>
+
+        {/* === 3. Search & Filter === */}
+        <View style={styles.searchContainer}>
+          <View style={styles.searchInputGroup}>
+            <Feather
+              name="search"
+              size={20}
+              color="#AAAAAA"
+              style={styles.searchIcon}
+            />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search destination..."
+              placeholderTextColor="#AAAAAA"
+            />
+          </View>
+          <TouchableOpacity style={styles.filterButton}>
+            <Feather name="sliders" size={24} color="white" />
+          </TouchableOpacity>
+        </View>
+
+        {/* === 4. Popular Destination Header === */}
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Popular Destination</Text>
+          <TouchableOpacity>
+            <Text style={styles.viewAllText}>View All</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* === 5. Destination Cards === */}
+        <View style={styles.cardList}>
+          {DUMMY_DESTINATIONS.map(dest => (
+            <DestinationCard key={dest.id} {...dest} />
+          ))}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  background: {
+  safeArea: {
     flex: 1,
-    justifyContent: 'flex-end',
+    backgroundColor: '#F7F7F7',
   },
-  overlay: {
-    backgroundColor: 'rgba(0,0,0,0.1)',
+  scrollContent: {
     paddingHorizontal: 25,
-    paddingVertical: 60,
+    paddingTop: 10,
+    paddingBottom: 40,
   },
-  content: {
-    alignItems: 'flex-start',
+
+  // === 1. Header ===
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
   },
-  title: {
+  greetingTitle: {
+    fontFamily: 'PlusJakartaSans-Regular',
     fontSize: 28,
-    color: '#fff',
-    fontWeight: 'bold',
-    textAlign: 'left',
-    marginBottom: 12,
+    color: '#888',
+    lineHeight: 30,
   },
-  subtitle: {
-    fontSize: 15,
-    color: '#ddd',
-    textAlign: 'left',
+  greetingName: {
+    fontFamily: 'PlusJakartaSans-Bold',
+    fontSize: 32,
+    color: '#333',
+    lineHeight: 35,
+  },
+  heartButton: {
+    position: 'relative',
+    padding: 5,
+  },
+  notificationDot: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#FF7043',
+    borderWidth: 2,
+    borderColor: '#F7F7F7',
+  },
+
+  // === 2. Plan Your Summer Card (Orange) ===
+  planCard: {
+    backgroundColor: '#FF7043',
+    borderRadius: 25,
+    padding: 25,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 25,
-    lineHeight: 22,
+    height: 130,
   },
-  button: {
-    backgroundColor: '#42E0D1',
-    paddingVertical: 12,
-    paddingHorizontal: 28,
-    borderRadius: 30,
+  planTitle: {
+    fontFamily: 'PlusJakartaSans-ExtraBold',
+    fontSize: 34,
+    color: 'white',
+    width: '75%',
+    lineHeight: 40,
   },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+  planArrowButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    padding: 10,
+    borderRadius: 25,
+  },
+
+  // === 3. Search & Filter ===
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  searchInputGroup: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 15,
+    paddingHorizontal: 15,
+    marginRight: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  searchIcon: {
+    marginRight: 10,
+  },
+  searchInput: {
+    flex: 1,
+    height: 55,
+    fontFamily: 'PlusJakartaSans-Regular',
+    fontSize: 16,
+    color: '#333',
+  },
+  filterButton: {
+    backgroundColor: '#333',
+    height: 55,
+    width: 55,
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  // === 4. Popular Destination Header ===
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontFamily: 'PlusJakartaSans-SemiBold',
+    fontSize: 22,
+    color: '#333',
+  },
+  viewAllText: {
+    fontFamily: 'PlusJakartaSans-SemiBold',
+    color: '#FF7043',
     fontSize: 16,
   },
+
+  // === 5. Destination Cards ===
+  cardList: {},
 });
 
 export default HomeScreen;
