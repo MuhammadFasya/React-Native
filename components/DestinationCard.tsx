@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ImageBackground,
   TouchableOpacity,
+  ImageSourcePropType,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -14,7 +15,7 @@ interface CardProps {
   country: string;
   rating: number;
   price: string;
-  imageUrl: string;
+  imageUrl: ImageSourcePropType;
 }
 
 const DestinationCard: React.FC<CardProps> = ({
@@ -26,33 +27,41 @@ const DestinationCard: React.FC<CardProps> = ({
 }) => {
   return (
     <TouchableOpacity style={cardStyles.container} activeOpacity={0.8}>
+           {' '}
       <ImageBackground
-        source={{ uri: imageUrl }}
+        source={imageUrl}
         style={cardStyles.imageBackground}
         imageStyle={cardStyles.imageStyle}
       >
-        {/* Heart Icon (Top Right) */}
+                {/* Heart Icon (Top Right) */}       {' '}
         <TouchableOpacity style={cardStyles.heartButton}>
-          <Feather name="heart" size={20} color="white" />
+                    <Feather name="heart" size={20} color="white" />       {' '}
         </TouchableOpacity>
-
-        {/* Content Overlay (Bottom) */}
+                {/* Content Overlay (Bottom) */}       {' '}
         <View style={cardStyles.overlay}>
+                   {' '}
           <View style={cardStyles.locationContainer}>
-            <Feather name="map-pin" size={14} color="white" />
-            <Text style={cardStyles.locationText}>{country}</Text>
+                        <Feather name="map-pin" size={14} color="white" />     
+                  <Text style={cardStyles.locationText}>{country}</Text>       
+             {' '}
           </View>
-
+                   {' '}
           <View style={cardStyles.infoRow}>
-            <Text style={cardStyles.titleText}>{title}</Text>
-
+                        <Text style={cardStyles.titleText}>{title}</Text>       
+               {' '}
             <View style={cardStyles.ratingPriceContainer}>
-              <Text style={cardStyles.ratingText}>⭐ {rating.toFixed(1)}</Text>
-              <Text style={cardStyles.priceText}>${price}</Text>
+                           {' '}
+              <Text style={cardStyles.ratingText}>⭐ {rating.toFixed(1)}</Text> 
+                          <Text style={cardStyles.priceText}>${price}</Text>   
+                     {' '}
             </View>
+                     {' '}
           </View>
+                 {' '}
         </View>
+             {' '}
       </ImageBackground>
+         {' '}
     </TouchableOpacity>
   );
 };
@@ -64,7 +73,6 @@ const cardStyles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 20,
     overflow: 'hidden',
-    // Shadow Styling
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
@@ -88,7 +96,7 @@ const cardStyles = StyleSheet.create({
   },
   overlay: {
     padding: 15,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)', // Overlay gelap di bagian bawah
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
   },
   locationContainer: {
     flexDirection: 'row',
@@ -128,7 +136,7 @@ const cardStyles = StyleSheet.create({
   priceText: {
     fontFamily: 'PlusJakartaSans-Bold',
     fontSize: 16,
-    color: '#00C7B1', // Teal Color
+    color: '#00C7B1',
   },
 });
 

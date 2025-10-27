@@ -6,9 +6,18 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  StatusBar, // Tambahan untuk mengontrol status bar
 } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../App'; // Import RootStackParamList dari App.tsx
 
-const LabuanBajoDetail = ({ navigation }: any) => {
+// Terapkan Typing yang benar
+type LabuanBajoDetailProps = NativeStackScreenProps<
+  RootStackParamList,
+  'LabuanBajoDetail'
+>;
+
+const LabuanBajoDetail: React.FC<LabuanBajoDetailProps> = ({ navigation }) => {
   const [quantity, setQuantity] = React.useState(1);
 
   const increaseQuantity = () => setQuantity(quantity + 1);
@@ -18,129 +27,172 @@ const LabuanBajoDetail = ({ navigation }: any) => {
 
   return (
     <View style={styles.container}>
-      {/* Header Section */}
+      <StatusBar
+        barStyle="light-content"
+        translucent
+        backgroundColor="transparent"
+      />
+            {/* Header Section */}     {' '}
       <ImageBackground
-        source={require('../assets/lb.jpeg')}
+        source={require('../assets/lb.jpeg')} // require() aman karena sudah dimuat di App.tsx
         style={styles.headerImage}
         resizeMode="cover"
       >
+               {' '}
         <View style={styles.headerOverlay}>
+                   {' '}
           <View style={styles.topBar}>
+                       {' '}
             <TouchableOpacity
               style={styles.backButton}
               onPress={() => navigation.goBack()}
             >
-              <Text style={styles.backButtonText}>←</Text>
+                            <Text style={styles.backButtonText}>←</Text>       
+                 {' '}
             </TouchableOpacity>
-
+                       {' '}
             <View style={styles.topRight}>
-              <Text style={styles.time}>14:53</Text>
+                            <Text style={styles.time}>14:53</Text>             {' '}
               <View style={styles.weatherBox}>
-                <Text style={styles.weatherIcon}>☀️</Text>
-                <Text style={styles.temperature}>24° C</Text>
+                                <Text style={styles.weatherIcon}>☀️</Text>     
+                          <Text style={styles.temperature}>24° C</Text>         
+                   {' '}
               </View>
+                         {' '}
             </View>
+                     {' '}
           </View>
-
-          {/* Bottom Info */}
+                    {/* Bottom Info */}         {' '}
           <View style={styles.imageBottomInfo}>
+                       {' '}
             <View style={styles.ratingBox}>
-              <Text style={styles.starIcon}>⭐</Text>
-              <Text style={styles.rating}>5.0</Text>
+                            <Text style={styles.starIcon}>⭐</Text>             {' '}
+              <Text style={styles.rating}>5.0</Text>           {' '}
             </View>
-            <Text style={styles.locationTitle}>Labuan Bajo</Text>
+                        <Text style={styles.locationTitle}>Labuan Bajo</Text>   
+                   {' '}
             <Text style={styles.locationDescription}>
-              From crystal-clear waters to breathtaking sunsets, Labuan Bajo is
-              calling! Explore hidden islands, swim with manta rays, and create
-              memories that last a lifetime.
+                            From crystal-clear waters to breathtaking sunsets,
+              Labuan Bajo is               calling! Explore hidden islands, swim
+              with manta rays, and create               memories that last a
+              lifetime.            {' '}
             </Text>
+                     {' '}
           </View>
+                 {' '}
         </View>
+             {' '}
       </ImageBackground>
-
-      {/* Content Section */}
+            {/* Content Section */}     {' '}
       <ScrollView style={styles.contentSection}>
+               {' '}
         <View style={styles.countryBadge}>
+                   {' '}
           <View style={styles.flagCircle}>
-            <Text style={styles.flagEmoji}>🇮🇩</Text>
+                        <Text style={styles.flagEmoji}>🇮🇩</Text>         {' '}
           </View>
-          <Text style={styles.countryText}>Indonesia</Text>
+                    <Text style={styles.countryText}>Indonesia</Text>       {' '}
         </View>
-
+               {' '}
         <Text style={styles.mainTitle}>Discover the Beauty of Labuan Bajo</Text>
-
-        {/* Review */}
+                {/* Review */}       {' '}
         <View style={styles.reviewCard}>
+                   {' '}
           <View style={styles.reviewHeader}>
+                       {' '}
             <View style={styles.avatarCircle}>
-              <Text style={styles.avatarText}>R</Text>
+                            <Text style={styles.avatarText}>R</Text>           {' '}
             </View>
+                       {' '}
             <View style={styles.reviewInfo}>
-              <Text style={styles.reviewerName}>By Rifqi starboy</Text>
+                           {' '}
+              <Text style={styles.reviewerName}>By Rifqi starboy</Text>         
+               {' '}
             </View>
+                     {' '}
           </View>
+                   {' '}
           <Text style={styles.reviewText}>
-            Wow amazing yahh, best experience in my life very very worth it I
-            like it! Very good very well!
+                        Wow amazing yahh, best experience in my life very very
+            worth it I             like it! Very good very well!          {' '}
           </Text>
+                 {' '}
         </View>
-
+               {' '}
         <TouchableOpacity style={styles.viewAllButton}>
-          <Text style={styles.viewAllText}>View All</Text>
+                    <Text style={styles.viewAllText}>View All</Text>       {' '}
         </TouchableOpacity>
-
-        {/* Recommendation */}
+                {/* Recommendation */}       {' '}
         <View style={styles.recommendationSection}>
+                   {' '}
           <Text style={styles.recommendationTitle}>Recommendation in Bajo</Text>
-
+                   {' '}
           <View style={styles.tripCard}>
+                       {' '}
             <ImageBackground
-              source={require('../assets/lb.jpeg')}
+              source={require('../assets/lb.jpeg')} // require() aman karena sudah dimuat di App.tsx
               style={styles.tripImage}
               imageStyle={styles.tripImageStyle}
             >
-              <View style={styles.tripOverlay} />
+                            <View style={styles.tripOverlay} />           {' '}
             </ImageBackground>
+                       {' '}
             <View style={styles.tripInfo}>
-              <Text style={styles.tripTitle}>Phinisi Luxury Private Trip</Text>
+                           {' '}
+              <Text style={styles.tripTitle}>Phinisi Luxury Private Trip</Text> 
+                         {' '}
               <View style={styles.tripFeature}>
-                <Text style={styles.tripFeatureIcon}>🚢</Text>
+                                <Text style={styles.tripFeatureIcon}>🚢</Text> 
+                             {' '}
                 <Text style={styles.tripFeatureText}>
-                  Complimentary pick-up
+                                    Complimentary pick-up                {' '}
                 </Text>
+                             {' '}
               </View>
+                         {' '}
             </View>
+                     {' '}
           </View>
+                 {' '}
         </View>
+             {' '}
       </ScrollView>
-
-      {/* Bottom Booking Bar */}
+            {/* Bottom Booking Bar */}     {' '}
       <View style={styles.bookingBar}>
+               {' '}
         <View style={styles.quantityControl}>
+                   {' '}
           <TouchableOpacity
             style={styles.quantityButton}
             onPress={increaseQuantity}
           >
-            <Text style={styles.quantityButtonText}>+</Text>
+                        <Text style={styles.quantityButtonText}>+</Text>       
+             {' '}
           </TouchableOpacity>
-          <Text style={styles.quantity}>{quantity}</Text>
+                    <Text style={styles.quantity}>{quantity}</Text>         {' '}
           <TouchableOpacity
             style={styles.quantityButton}
             onPress={decreaseQuantity}
           >
-            <Text style={styles.quantityButtonText}>-</Text>
+                        <Text style={styles.quantityButtonText}>-</Text>       
+             {' '}
           </TouchableOpacity>
+                 {' '}
         </View>
-
+               {' '}
         <View style={styles.priceSection}>
-          <Text style={styles.totalAmountLabel}>Total Amount</Text>
-          <Text style={styles.price}>${(10.0 * quantity).toFixed(3)}</Text>
+                    <Text style={styles.totalAmountLabel}>Total Amount</Text>   
+               {' '}
+          <Text style={styles.price}>${(10.0 * quantity).toFixed(3)}</Text>     
+           {' '}
         </View>
-
+               {' '}
         <TouchableOpacity style={styles.bookButton}>
-          <Text style={styles.bookButtonText}>Book Now</Text>
+                    <Text style={styles.bookButtonText}>Book Now</Text>       {' '}
         </TouchableOpacity>
+             {' '}
       </View>
+         {' '}
     </View>
   );
 };

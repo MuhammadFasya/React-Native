@@ -6,10 +6,19 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Feather from 'react-native-vector-icons/Feather';
 
+// EXPO IMPORTS UNTUK LOADING ASSET DAN FONT
+import * as SplashScreen from 'expo-splash-screen';
+import * as Font from 'expo-font';
+import * as Asset from 'expo-asset';
+import { ASSET_MAP, FONT_MAP } from './assets/assetMap';
+
 // Import screens
 import HomeScreen from './screens/HomeScreen';
 import LabuanBajoDetail from './screens/LabuanBajoDetail';
 import TicketsScreen from './screens/TicketScreen';
+
+// Nonaktifkan splash screen bawaan Expo
+SplashScreen.preventAutoHideAsync();
 
 // === DEFINISI PARAM LIST UNTUK TYPING ===
 export type TabParamList = {
@@ -38,7 +47,6 @@ const ProfileScreen: React.FC = () => (
     <Text style={tabStyles.dummyText}>Profile Screen</Text>
   </View>
 );
-// ===================================
 
 // Typed, stable tab icon components for proper signature
 type TabIconProps = { focused: boolean; color: string; size: number };
@@ -75,6 +83,8 @@ const HomeTabs: React.FC = () => {
         headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: tabStyles.tabBar,
+        tabBarInactiveTintColor: '#fff',
+        tabBarActiveTintColor: '#FF7043',
       }}
     >
       <Tab.Screen
@@ -110,6 +120,36 @@ const HomeTabs: React.FC = () => {
 };
 
 const App: React.FC = () => {
+  // STATE UNTUK MELACAK KESIAPAN APLIKASI
+  const [appIsReady, setAppIsReady] = React.useState(false);
+
+  React.useEffect(() => {
+    async function prepare() {
+      try {
+        // 1. Load Custom Fonts
+        await Font.loadAsync(FONT_MAP);
+
+        // 2. Load Static Assets
+
+        const assetPromises = Object.values(ASSET_MAP).map(imageModule => {
+          return Asset.Asset.fromModule(imageModule as number).downloadAsync();
+        });
+        await Promise.all(assetPromises);
+      } catch (e) {
+        console.error('Gagal memuat font atau aset:', e);
+      } finally {
+        setAppIsReady(true);
+        SplashScreen.hideAsync();
+      }
+    }
+
+    prepare();
+  }, []);
+
+  if (!appIsReady) {
+    return null;
+  }
+
   return (
     <SafeAreaProvider>
       <NavigationContainer>
