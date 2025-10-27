@@ -7,9 +7,8 @@ import {
   ImageBackground,
   ImageSourcePropType,
 } from 'react-native';
-import Feather from 'react-native-vector-icons/Feather';
+import { Feather } from '@expo/vector-icons';
 
-// Interface props card
 interface CardProps {
   id?: string;
   title: string;
@@ -30,35 +29,28 @@ const DestinationCard: React.FC<CardProps> = ({
 }) => {
   return (
     <TouchableOpacity
-      style={cardStyles.container}
+      style={styles.container}
       activeOpacity={0.85}
       onPress={onPress}
     >
       <ImageBackground
         source={imageUrl}
-        style={cardStyles.imageBackground}
-        imageStyle={cardStyles.imageStyle} // moved inline -> stylesheet reference
+        style={styles.imageBackground}
+        imageStyle={styles.imageStyle}
       >
-        {/* Heart Icon (Top Right) */}
-        <TouchableOpacity style={cardStyles.heartButton} activeOpacity={0.8}>
+        <TouchableOpacity style={styles.heartButton} activeOpacity={0.8}>
           <Feather name="heart" size={18} color="white" />
         </TouchableOpacity>
 
-        {/* Content Overlay (Bottom) */}
-        <View style={cardStyles.overlay}>
-          <View style={cardStyles.locationContainer}>
-            <Text style={cardStyles.titleText}>{title}</Text>
-            <Text style={cardStyles.locationText}>{country}</Text>
+        <View style={styles.overlay}>
+          <View style={styles.locationContainer}>
+            <Text style={styles.titleText}>{title}</Text>
+            <Text style={styles.locationText}>{country}</Text>
           </View>
 
-          <View style={cardStyles.infoRow}>
-            <View>
-              <Text style={cardStyles.priceText}>{price}</Text>
-            </View>
-
-            <View style={cardStyles.ratingPriceContainer}>
-              <Text style={cardStyles.ratingText}>{rating.toFixed(1)}</Text>
-            </View>
+          <View style={styles.infoRow}>
+            <Text style={styles.priceText}>{price}</Text>
+            <Text style={styles.ratingText}>{rating.toFixed(1)}</Text>
           </View>
         </View>
       </ImageBackground>
@@ -66,14 +58,13 @@ const DestinationCard: React.FC<CardProps> = ({
   );
 };
 
-const cardStyles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: 250,
     marginBottom: 20,
     borderRadius: 20,
     overflow: 'hidden',
-    // Shadow Styling
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
@@ -104,7 +95,6 @@ const cardStyles = StyleSheet.create({
     marginBottom: 8,
   },
   locationText: {
-    fontFamily: 'PlusJakartaSans-Regular',
     color: 'white',
     marginTop: 4,
     fontSize: 14,
@@ -115,28 +105,23 @@ const cardStyles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   titleText: {
-    fontFamily: 'PlusJakartaSans-Bold',
+    fontWeight: '700',
     fontSize: 20,
     color: 'white',
     maxWidth: '70%',
   },
-  ratingPriceContainer: {
-    alignItems: 'flex-end',
-  },
   ratingText: {
-    fontFamily: 'PlusJakartaSans-SemiBold',
+    color: 'white',
     backgroundColor: 'rgba(0,0,0,0.5)',
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 10,
-    color: 'white',
     fontSize: 12,
-    marginBottom: 5,
   },
   priceText: {
-    fontFamily: 'PlusJakartaSans-Bold',
+    fontWeight: '700',
     fontSize: 16,
-    color: '#00C7B1', // Teal Color
+    color: '#00C7B1',
   },
 });
 

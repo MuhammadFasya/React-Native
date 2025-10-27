@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -10,12 +10,12 @@ import {
   ImageSourcePropType,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Feather from 'react-native-vector-icons/Feather';
-import Entypo from 'react-native-vector-icons/Entypo';
+import { Feather } from '@expo/vector-icons';
 import DestinationCard from '../components/DestinationCard';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
+import { ASSET_MAP } from '../assets/assetMap';
 
 type Destination = {
   id: string;
@@ -33,7 +33,7 @@ const DUMMY_DESTINATIONS: Destination[] = [
     country: 'Indonesia',
     rating: 5.0,
     price: '4.000/pax',
-    imageUrl: require('../assets/lb.jpeg'),
+    imageUrl: ASSET_MAP.lb,
   },
   {
     id: '2',
@@ -41,7 +41,7 @@ const DUMMY_DESTINATIONS: Destination[] = [
     country: 'Italia',
     rating: 4.7,
     price: '3.500/pax',
-    imageUrl: require('../assets/venice.jpg'),
+    imageUrl: ASSET_MAP.venice,
   },
   {
     id: '3',
@@ -49,13 +49,16 @@ const DUMMY_DESTINATIONS: Destination[] = [
     country: 'Indonesia',
     rating: 4.9,
     price: '4.500/pax',
-    imageUrl: require('../assets/sumba.jpeg'),
+    imageUrl: ASSET_MAP.sumba,
   },
 ];
 
 const HomeScreen: React.FC = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  //
+  const [query, setQuery] = useState('');
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -72,13 +75,7 @@ const HomeScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.planCard}>
-          <Text style={styles.planTitle}>Plan Your Summer!</Text>
-          <TouchableOpacity style={styles.planArrowButton}>
-            <Entypo name="chevron-right" size={24} color="white" />
-          </TouchableOpacity>
-        </View>
-
+        {/* search uses query state */}
         <View style={styles.searchContainer}>
           <View style={styles.searchInputGroup}>
             <Feather
@@ -91,17 +88,12 @@ const HomeScreen: React.FC = () => {
               style={styles.searchInput}
               placeholder="Search destination..."
               placeholderTextColor="#AAAAAA"
+              value={query}
+              onChangeText={setQuery}
             />
           </View>
           <TouchableOpacity style={styles.filterButton}>
             <Feather name="sliders" size={24} color="white" />
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Popular Destination</Text>
-          <TouchableOpacity>
-            <Text style={styles.viewAllText}>View All</Text>
           </TouchableOpacity>
         </View>
 
@@ -117,7 +109,7 @@ const HomeScreen: React.FC = () => {
               imageUrl={dest.imageUrl}
               onPress={() =>
                 navigation.navigate('LabuanBajoDetail', {
-                  destinationId: dest.id,
+                  destination: dest, // pass full object
                 })
               }
             />
@@ -129,38 +121,17 @@ const HomeScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#F7F7F7',
-  },
-  scrollContent: {
-    paddingHorizontal: 25,
-    paddingTop: 10,
-    paddingBottom: 40,
-  },
-
+  safeArea: { flex: 1, backgroundColor: '#F7F7F7' },
+  scrollContent: { paddingHorizontal: 25, paddingTop: 10, paddingBottom: 40 },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 20,
   },
-  greetingTitle: {
-    fontFamily: 'PlusJakartaSans-Regular',
-    fontSize: 28,
-    color: '#888',
-    lineHeight: 30,
-  },
-  greetingName: {
-    fontFamily: 'PlusJakartaSans-Bold',
-    fontSize: 32,
-    color: '#333',
-    lineHeight: 35,
-  },
-  heartButton: {
-    position: 'relative',
-    padding: 5,
-  },
+  greetingTitle: { fontSize: 28, color: '#888', lineHeight: 30 },
+  greetingName: { fontSize: 32, color: '#333', lineHeight: 35 },
+  heartButton: { position: 'relative', padding: 5 },
   notificationDot: {
     position: 'absolute',
     top: 0,
@@ -172,86 +143,38 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#F7F7F7',
   },
-
-  planCard: {
-    backgroundColor: '#FF7043',
-    borderRadius: 25,
-    padding: 25,
+  cardList: {},
+  searchContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 25,
-    height: 130,
-  },
-  planTitle: {
-    fontFamily: 'PlusJakartaSans-ExtraBold',
-    fontSize: 34,
-    color: 'white',
-    width: '75%',
-    lineHeight: 40,
-  },
-  planArrowButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    padding: 10,
-    borderRadius: 25,
-  },
-
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: 20,
   },
   searchInputGroup: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'white',
-    borderRadius: 15,
+    borderRadius: 25,
     paddingHorizontal: 15,
-    marginRight: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
+    paddingVertical: 10,
+    elevation: 1,
   },
-  searchIcon: {
-    marginRight: 10,
-  },
+  searchIcon: { marginRight: 10 },
   searchInput: {
     flex: 1,
-    height: 55,
-    fontFamily: 'PlusJakartaSans-Regular',
     fontSize: 16,
     color: '#333',
   },
   filterButton: {
-    backgroundColor: '#333',
-    height: 55,
-    width: 55,
-    borderRadius: 15,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#FF7043',
     justifyContent: 'center',
     alignItems: 'center',
+    marginLeft: 10,
   },
-
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontFamily: 'PlusJakartaSans-SemiBold',
-    fontSize: 22,
-    color: '#333',
-  },
-  viewAllText: {
-    fontFamily: 'PlusJakartaSans-SemiBold',
-    color: '#FF7043',
-    fontSize: 16,
-  },
-
-  cardList: {},
 });
 
 export default HomeScreen;
