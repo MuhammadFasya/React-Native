@@ -3,19 +3,21 @@ import {
   View,
   Text,
   StyleSheet,
-  ImageBackground,
   TouchableOpacity,
+  ImageBackground,
   ImageSourcePropType,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 
 // Interface props card
 interface CardProps {
+  id?: string;
   title: string;
   country: string;
   rating: number;
   price: string;
   imageUrl: ImageSourcePropType;
+  onPress?: () => void;
 }
 
 const DestinationCard: React.FC<CardProps> = ({
@@ -24,44 +26,42 @@ const DestinationCard: React.FC<CardProps> = ({
   rating,
   price,
   imageUrl,
+  onPress,
 }) => {
   return (
-    <TouchableOpacity style={cardStyles.container} activeOpacity={0.8}>
-           {' '}
+    <TouchableOpacity
+      style={cardStyles.container}
+      activeOpacity={0.85}
+      onPress={onPress}
+    >
       <ImageBackground
         source={imageUrl}
         style={cardStyles.imageBackground}
-        imageStyle={cardStyles.imageStyle}
+        imageStyle={cardStyles.imageStyle} // moved inline -> stylesheet reference
       >
-                {/* Heart Icon (Top Right) */}       {' '}
-        <TouchableOpacity style={cardStyles.heartButton}>
-                    <Feather name="heart" size={20} color="white" />       {' '}
+        {/* Heart Icon (Top Right) */}
+        <TouchableOpacity style={cardStyles.heartButton} activeOpacity={0.8}>
+          <Feather name="heart" size={18} color="white" />
         </TouchableOpacity>
-                {/* Content Overlay (Bottom) */}       {' '}
+
+        {/* Content Overlay (Bottom) */}
         <View style={cardStyles.overlay}>
-                   {' '}
           <View style={cardStyles.locationContainer}>
-                        <Feather name="map-pin" size={14} color="white" />     
-                  <Text style={cardStyles.locationText}>{country}</Text>       
-             {' '}
+            <Text style={cardStyles.titleText}>{title}</Text>
+            <Text style={cardStyles.locationText}>{country}</Text>
           </View>
-                   {' '}
+
           <View style={cardStyles.infoRow}>
-                        <Text style={cardStyles.titleText}>{title}</Text>       
-               {' '}
-            <View style={cardStyles.ratingPriceContainer}>
-                           {' '}
-              <Text style={cardStyles.ratingText}>⭐ {rating.toFixed(1)}</Text> 
-                          <Text style={cardStyles.priceText}>${price}</Text>   
-                     {' '}
+            <View>
+              <Text style={cardStyles.priceText}>{price}</Text>
             </View>
-                     {' '}
+
+            <View style={cardStyles.ratingPriceContainer}>
+              <Text style={cardStyles.ratingText}>{rating.toFixed(1)}</Text>
+            </View>
           </View>
-                 {' '}
         </View>
-             {' '}
       </ImageBackground>
-         {' '}
     </TouchableOpacity>
   );
 };
@@ -73,6 +73,7 @@ const cardStyles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 20,
     overflow: 'hidden',
+    // Shadow Styling
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
@@ -90,23 +91,22 @@ const cardStyles = StyleSheet.create({
     position: 'absolute',
     top: 15,
     right: 15,
-    backgroundColor: 'rgba(0,0,0,0.4)',
+    backgroundColor: 'rgba(0,0,0,0.35)',
     padding: 8,
     borderRadius: 20,
+    zIndex: 2,
   },
   overlay: {
     padding: 15,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    backgroundColor: 'rgba(0, 0, 0, 0.35)',
   },
   locationContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 5,
+    marginBottom: 8,
   },
   locationText: {
     fontFamily: 'PlusJakartaSans-Regular',
     color: 'white',
-    marginLeft: 5,
+    marginTop: 4,
     fontSize: 14,
   },
   infoRow: {
@@ -118,7 +118,7 @@ const cardStyles = StyleSheet.create({
     fontFamily: 'PlusJakartaSans-Bold',
     fontSize: 20,
     color: 'white',
-    maxWidth: '60%',
+    maxWidth: '70%',
   },
   ratingPriceContainer: {
     alignItems: 'flex-end',
@@ -136,7 +136,7 @@ const cardStyles = StyleSheet.create({
   priceText: {
     fontFamily: 'PlusJakartaSans-Bold',
     fontSize: 16,
-    color: '#00C7B1',
+    color: '#00C7B1', // Teal Color
   },
 });
 
