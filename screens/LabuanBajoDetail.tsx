@@ -1,29 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  ImageBackground,
-  TouchableOpacity,
-  StyleSheet,
+  Image,
+  ActivityIndicator,
   ScrollView,
   StatusBar,
   ImageSourcePropType,
+  TouchableOpacity,
+  StyleSheet,
 } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
+import { getDestination, Destination } from '../services/api';
 import { ASSET_MAP } from '../assets/assetMap';
 
-type LabuanBajoDetailProps = NativeStackScreenProps<
-  RootStackParamList,
-  'LabuanBajoDetail'
->;
+type Props = NativeStackScreenProps<RootStackParamList, 'LabuanBajoDetail'>;
 
-const LabuanBajoDetail: React.FC<LabuanBajoDetailProps> = ({
-  navigation,
-  route,
-}) => {
-  const { destination } = route.params;
+const LabuanBajoDetail: React.FC<Props> = ({ navigation, route }) => {
+  // assume navigation passed { id: string } from HomeScreen
+  const { id, destination } = route.params as any;
+  const [data, setData] = useState<Destination | null>(destination ?? null);
+  const [loading, setLoading] = useState(!destination);
+  const [error, setError] = useState<string | null>(null);
   const [quantity, setQuantity] = React.useState(1);
+
+  useEffect(() => {
+    if (data) return;
+    let mounted = true;
+    getDestination(id)
+      .then(d => mounted && setData(d))
+      .catch(e => mounted && setError(e.message))
+      .finally(() => mounted && setLoading(false));
+    return () => {
+      mounted = false;
+    };
+  }, [id]);
 
   const increaseQuantity = () => setQuantity(q => q + 1);
   const decreaseQuantity = () => setQuantity(q => (q > 1 ? q - 1 : q));
@@ -41,6 +53,15 @@ const LabuanBajoDetail: React.FC<LabuanBajoDetailProps> = ({
     ASSET_MAP[ID_TO_ASSET_KEY[destination?.id ?? '1']] ??
     undefined;
 
+  if (loading) return <ActivityIndicator style={styles.activityIndicator} />;
+  if (error)
+    return (
+      <View>
+        <Text>{error}</Text>
+      </View>
+    );
+  if (!data) return null;
+
   return (
     <View style={styles.container}>
       <StatusBar
@@ -50,44 +71,7 @@ const LabuanBajoDetail: React.FC<LabuanBajoDetailProps> = ({
       />
 
       {image ? (
-        <ImageBackground
-          source={image}
-          style={styles.headerImage}
-          resizeMode="cover"
-        >
-          <View style={styles.headerOverlay}>
-            <View style={styles.topBar}>
-              <TouchableOpacity
-                style={styles.backButton}
-                onPress={() => navigation.goBack()}
-              >
-                <Text style={styles.backButtonText}>←</Text>
-              </TouchableOpacity>
-
-              <View style={styles.topRight}>
-                <Text style={styles.time}>14:53</Text>
-                <View style={styles.weatherBox}>
-                  <Text style={styles.weatherIcon}>☀️</Text>
-                  <Text style={styles.temperature}>24° C</Text>
-                </View>
-              </View>
-            </View>
-
-            <View style={styles.imageBottomInfo}>
-              <View style={styles.ratingBox}>
-                <Text style={styles.starIcon}>⭐</Text>
-                <Text style={styles.rating}>{destination?.rating ?? '—'}</Text>
-              </View>
-
-              <Text style={styles.locationTitle}>
-                {destination?.title ?? 'Destination'}
-              </Text>
-              <Text style={styles.locationDescription}>
-                {destination?.country ?? ''}
-              </Text>
-            </View>
-          </View>
-        </ImageBackground>
+        <Image source={image} style={styles.headerImage} resizeMode="cover" />
       ) : null}
 
       <ScrollView style={styles.contentSection}>
@@ -126,13 +110,13 @@ const LabuanBajoDetail: React.FC<LabuanBajoDetailProps> = ({
         <View style={styles.recommendationSection}>
           <Text style={styles.recommendationTitle}>Recommendation in Bajo</Text>
           <View style={styles.tripCard}>
-            <ImageBackground
+            <Image
               source={image}
               style={styles.tripImage}
               imageStyle={styles.tripImageStyle}
             >
               <View style={styles.tripOverlay} />
-            </ImageBackground>
+            </Image>
             <View style={styles.tripInfo}>
               <Text style={styles.tripTitle}>Phinisi Luxury Private Trip</Text>
               <View style={styles.tripFeature}>
@@ -178,6 +162,7 @@ const LabuanBajoDetail: React.FC<LabuanBajoDetailProps> = ({
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
+  activityIndicator: { flex: 1 },
   headerImage: { height: 380, width: '100%' },
   headerOverlay: {
     flex: 1,

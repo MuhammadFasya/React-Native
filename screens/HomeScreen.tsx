@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   StatusBar,
-  ImageSourcePropType,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
@@ -15,50 +15,34 @@ import DestinationCard from '../components/DestinationCard';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
-import { ASSET_MAP } from '../assets/assetMap';
-
-type Destination = {
-  id: string;
-  title: string;
-  country: string;
-  rating: number;
-  price: string;
-  imageUrl: ImageSourcePropType;
-};
-
-const DUMMY_DESTINATIONS: Destination[] = [
-  {
-    id: '1',
-    title: 'Labuan Bajo',
-    country: 'Indonesia',
-    rating: 5.0,
-    price: '4.000/pax',
-    imageUrl: ASSET_MAP.lb,
-  },
-  {
-    id: '2',
-    title: 'Venice',
-    country: 'Italia',
-    rating: 4.7,
-    price: '3.500/pax',
-    imageUrl: ASSET_MAP.venice,
-  },
-  {
-    id: '3',
-    title: 'Sumba Island',
-    country: 'Indonesia',
-    rating: 4.9,
-    price: '4.500/pax',
-    imageUrl: ASSET_MAP.sumba,
-  },
-];
+import { getDestinations, Destination } from '../services/api';
 
 const HomeScreen: React.FC = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
-  //
+  const [items, setItems] = useState<Destination[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState('');
+
+  useEffect(() => {
+    let mounted = true;
+    getDestinations()
+      .then(data => mounted && setItems(data))
+      .catch(e => mounted && setError(e.message))
+      .finally(() => mounted && setLoading(false));
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  if (loading) return <ActivityIndicator style={styles.activityIndicator} />;
+  if (error)
+    return (
+      <View style={styles.errorContainer}>
+        <Text>{error}</Text>
+      </View>
+    );
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -98,7 +82,7 @@ const HomeScreen: React.FC = () => {
         </View>
 
         <View style={styles.cardList}>
-          {DUMMY_DESTINATIONS.map(dest => (
+          {items.map(dest => (
             <DestinationCard
               key={dest.id}
               id={dest.id}
@@ -106,11 +90,9 @@ const HomeScreen: React.FC = () => {
               country={dest.country}
               rating={dest.rating}
               price={dest.price}
-              imageUrl={dest.imageUrl}
+              imageUrl={dest.imageUrl ? { uri: dest.imageUrl } : undefined}
               onPress={() =>
-                navigation.navigate('LabuanBajoDetail', {
-                  destination: dest, // pass full object
-                })
+                navigation.navigate('LabuanBajoDetail' as any, { id: dest.id })
               }
             />
           ))}
@@ -174,6 +156,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: 10,
+  },
+  activityIndicator: {
+    flex: 1,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

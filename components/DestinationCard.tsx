@@ -1,21 +1,19 @@
 import React from 'react';
 import {
+  TouchableOpacity,
   View,
   Text,
-  StyleSheet,
-  TouchableOpacity,
-  ImageBackground,
+  Image,
   ImageSourcePropType,
 } from 'react-native';
-import { Feather } from '@expo/vector-icons';
 
 interface CardProps {
   id?: string;
   title: string;
   country: string;
-  rating: number;
-  price: string;
-  imageUrl: ImageSourcePropType;
+  rating?: number;
+  price?: string;
+  imageUrl?: ImageSourcePropType | { uri: string };
   onPress?: () => void;
 }
 
@@ -29,100 +27,30 @@ const DestinationCard: React.FC<CardProps> = ({
 }) => {
   return (
     <TouchableOpacity
-      style={styles.container}
-      activeOpacity={0.85}
       onPress={onPress}
+      style={{
+        marginBottom: 12,
+        borderRadius: 8,
+        overflow: 'hidden',
+        borderWidth: 1,
+        borderColor: '#eee',
+      }}
     >
-      <ImageBackground
-        source={imageUrl}
-        style={styles.imageBackground}
-        imageStyle={styles.imageStyle}
-      >
-        <TouchableOpacity style={styles.heartButton} activeOpacity={0.8}>
-          <Feather name="heart" size={18} color="white" />
-        </TouchableOpacity>
-
-        <View style={styles.overlay}>
-          <View style={styles.locationContainer}>
-            <Text style={styles.titleText}>{title}</Text>
-            <Text style={styles.locationText}>{country}</Text>
-          </View>
-
-          <View style={styles.infoRow}>
-            <Text style={styles.priceText}>{price}</Text>
-            <Text style={styles.ratingText}>{rating.toFixed(1)}</Text>
-          </View>
-        </View>
-      </ImageBackground>
+      {imageUrl ? (
+        <Image
+          source={imageUrl as any}
+          style={{ width: '100%', height: 140 }}
+        />
+      ) : (
+        <View style={{ height: 140, backgroundColor: '#ddd' }} />
+      )}
+      <View style={{ padding: 12 }}>
+        <Text style={{ fontWeight: '700' }}>{title}</Text>
+        <Text style={{ color: '#666' }}>{country}</Text>
+        <Text style={{ marginTop: 6 }}>${price}</Text>
+      </View>
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    height: 250,
-    marginBottom: 20,
-    borderRadius: 20,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 5,
-  },
-  imageBackground: {
-    flex: 1,
-    justifyContent: 'flex-end',
-  },
-  imageStyle: {
-    borderRadius: 20,
-  },
-  heartButton: {
-    position: 'absolute',
-    top: 15,
-    right: 15,
-    backgroundColor: 'rgba(0,0,0,0.35)',
-    padding: 8,
-    borderRadius: 20,
-    zIndex: 2,
-  },
-  overlay: {
-    padding: 15,
-    backgroundColor: 'rgba(0, 0, 0, 0.35)',
-  },
-  locationContainer: {
-    marginBottom: 8,
-  },
-  locationText: {
-    color: 'white',
-    marginTop: 4,
-    fontSize: 14,
-  },
-  infoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-  },
-  titleText: {
-    fontWeight: '700',
-    fontSize: 20,
-    color: 'white',
-    maxWidth: '70%',
-  },
-  ratingText: {
-    color: 'white',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 10,
-    fontSize: 12,
-  },
-  priceText: {
-    fontWeight: '700',
-    fontSize: 16,
-    color: '#00C7B1',
-  },
-});
 
 export default DestinationCard;
